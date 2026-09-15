@@ -1,0 +1,23 @@
+---
+page_title: "TheHive Provider"
+description: |-
+  The TheHive provider manages configuration resources on a TheHive 5 instance.
+---
+
+# TheHive Provider
+
+The TheHive provider lets you manage configuration-level resources
+(organisations, user profiles, custom fields, etc.) on a
+[TheHive 5](https://docs.strangebee.com/) instance as Terraform code.
+
+## Authentication
+
+The provider authenticates via an API key.  You can set credentials in the
+provider block or through environment variables:
+
+| Provider attribute | Environment variable |
+|--------------------|----------------------|
+| `url`              | `THEHIVE_URL`        |
+| `api_key`          | `THEHIVE_API_KEY`    |
+
+{{ .SchemaMarkdown | trimspace }}
