@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 
@@ -74,9 +76,10 @@ func (r *UserResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Computed:    true,
 			},
 			"type": schema.StringAttribute{
-				Description: "Account type: normal or service.",
+				Description: "Account type: Normal or Service.",
 				Optional:    true,
 				Computed:    true,
+				Validators:  []validator.String{stringvalidator.OneOf("Normal", "Service")},
 			},
 			"locked": schema.BoolAttribute{
 				Description: "Whether the account is locked.",
