@@ -42,11 +42,19 @@ func (c *Client) CreateCaseTemplate(ctx context.Context, input CaseTemplateInput
 }
 
 func (c *Client) GetCaseTemplate(ctx context.Context, id string) (*CaseTemplate, error) {
-	var ct CaseTemplate
-	if err := c.doJSON(ctx, http.MethodGet, fmt.Sprintf("%s/%s", caseTemplateBasePath, id), nil, &ct, http.StatusOK); err != nil {
+	body := map[string]any{
+		"query": []map[string]any{
+			{"_name": "getCaseTemplate", "idOrName": id},
+		},
+	}
+	var results []CaseTemplate
+	if err := c.doJSON(ctx, http.MethodPost, "/api/v1/query", body, &results, http.StatusOK); err != nil {
 		return nil, fmt.Errorf("reading case template %q: %w", id, err)
 	}
-	return &ct, nil
+	if len(results) == 0 {
+		return nil, fmt.Errorf("case template %q not found", id)
+	}
+	return &results[0], nil
 }
 
 func (c *Client) UpdateCaseTemplate(ctx context.Context, id string, input CaseTemplateInput) (*CaseTemplate, error) {

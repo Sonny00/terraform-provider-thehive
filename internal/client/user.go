@@ -7,15 +7,15 @@ import (
 )
 
 type User struct {
-	ID           string   `json:"_id"`
-	Login        string   `json:"login"`
-	Name         string   `json:"name"`
-	Profile      string   `json:"profile"`
-	Organisation string   `json:"organisation,omitempty"`
-	Email        string   `json:"email,omitempty"`
-	Type         string   `json:"type,omitempty"`
-	Locked       bool     `json:"locked"`
-	HasKey       bool     `json:"hasKey"`
+	ID           string `json:"_id"`
+	Login        string `json:"login"`
+	Name         string `json:"name"`
+	Profile      string `json:"profile"`
+	Organisation string `json:"organisation,omitempty"`
+	Email        string `json:"email,omitempty"`
+	Type         string `json:"type,omitempty"`
+	Locked       bool   `json:"locked"`
+	HasKey       bool   `json:"hasKey"`
 }
 
 type UserInput struct {
@@ -45,11 +45,19 @@ func (c *Client) CreateUser(ctx context.Context, input UserInput) (*User, error)
 }
 
 func (c *Client) GetUser(ctx context.Context, id string) (*User, error) {
-	var u User
-	if err := c.doJSON(ctx, http.MethodGet, fmt.Sprintf("%s/%s", userBasePath, id), nil, &u, http.StatusOK); err != nil {
+	body := map[string]any{
+		"query": []map[string]any{
+			{"_name": "getUser", "idOrName": id},
+		},
+	}
+	var results []User
+	if err := c.doJSON(ctx, http.MethodPost, "/api/v1/query", body, &results, http.StatusOK); err != nil {
 		return nil, fmt.Errorf("reading user %q: %w", id, err)
 	}
-	return &u, nil
+	if len(results) == 0 {
+		return nil, fmt.Errorf("user %q not found", id)
+	}
+	return &results[0], nil
 }
 
 func (c *Client) UpdateUser(ctx context.Context, id string, input UserUpdateInput) (*User, error) {

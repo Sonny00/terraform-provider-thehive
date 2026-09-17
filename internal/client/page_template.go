@@ -32,11 +32,19 @@ func (c *Client) CreatePageTemplate(ctx context.Context, input PageTemplateInput
 }
 
 func (c *Client) GetPageTemplate(ctx context.Context, id string) (*PageTemplate, error) {
-	var pt PageTemplate
-	if err := c.doJSON(ctx, http.MethodGet, fmt.Sprintf("%s/%s", pageTemplateBasePath, id), nil, &pt, http.StatusOK); err != nil {
+	body := map[string]any{
+		"query": []map[string]any{
+			{"_name": "getPageTemplate", "idOrName": id},
+		},
+	}
+	var results []PageTemplate
+	if err := c.doJSON(ctx, http.MethodPost, "/api/v1/query", body, &results, http.StatusOK); err != nil {
 		return nil, fmt.Errorf("reading page template %q: %w", id, err)
 	}
-	return &pt, nil
+	if len(results) == 0 {
+		return nil, fmt.Errorf("page template %q not found", id)
+	}
+	return &results[0], nil
 }
 
 func (c *Client) UpdatePageTemplate(ctx context.Context, id string, input PageTemplateInput) (*PageTemplate, error) {

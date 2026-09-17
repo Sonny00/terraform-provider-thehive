@@ -39,12 +39,19 @@ func (c *Client) CreateOrganisation(ctx context.Context, input OrganisationInput
 
 // GetOrganisation fetches an organisation by its ID.
 func (c *Client) GetOrganisation(ctx context.Context, id string) (*Organisation, error) {
-	var org Organisation
-	path := fmt.Sprintf("%s/%s", orgBasePath, id)
-	if err := c.doJSON(ctx, http.MethodGet, path, nil, &org, http.StatusOK); err != nil {
+	body := map[string]any{
+		"query": []map[string]any{
+			{"_name": "getOrganisation", "idOrName": id},
+		},
+	}
+	var results []Organisation
+	if err := c.doJSON(ctx, http.MethodPost, "/api/v1/query", body, &results, http.StatusOK); err != nil {
 		return nil, fmt.Errorf("reading organisation %q: %w", id, err)
 	}
-	return &org, nil
+	if len(results) == 0 {
+		return nil, fmt.Errorf("organisation %q not found", id)
+	}
+	return &results[0], nil
 }
 
 // UpdateOrganisation patches an existing organisation and returns the updated state.
