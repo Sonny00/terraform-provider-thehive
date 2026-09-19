@@ -27,6 +27,13 @@ type CustomFieldInput struct {
 	Mandatory   bool     `json:"mandatory,omitempty"`
 }
 
+type CustomFieldUpdateInput struct {
+	DisplayName string   `json:"displayName,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Options     []string `json:"options,omitempty"`
+	Mandatory   bool     `json:"mandatory,omitempty"`
+}
+
 const customFieldBasePath = "/api/v1/customField"
 
 func (c *Client) CreateCustomField(ctx context.Context, input CustomFieldInput) (*CustomField, error) {

@@ -122,6 +122,8 @@ func (p *TheHiveProvider) Resources(_ context.Context) []func() resource.Resourc
 		NewObservableTypeResource,
 		NewCaseTemplateResource,
 		NewPageTemplateResource,
+		NewCortexConfigResource,
+		NewMISPConfigResource,
 	}
 }
 
