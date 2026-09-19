@@ -130,6 +130,7 @@ func (p *TheHiveProvider) Resources(_ context.Context) []func() resource.Resourc
 // DataSources returns the list of read-only data sources.
 func (p *TheHiveProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
-		// TODO: add data sources here as they are implemented.
+		NewProfileDataSource,
+		NewOrganisationDataSource,
 	}
 }
