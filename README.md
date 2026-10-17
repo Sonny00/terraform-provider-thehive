@@ -15,6 +15,19 @@ Terraform provider for TheHive 5. Very early stage, built as a learning/hobby pr
 - `thehive_page_template`
 - `thehive_cortex_config`
 - `thehive_misp_config`
+- `thehive_case_status`
+- `thehive_alert_status`
+- `thehive_email_intake`
+- `thehive_function`
+
+## Data sources
+
+- `thehive_profile`
+- `thehive_organisation`
+- `thehive_user`
+- `thehive_custom_field`
+- `thehive_observable_type`
+- `thehive_case_template`
 
 ## Usage
 
@@ -46,6 +59,29 @@ resource "thehive_cortex_config" "main" {
     auth_key               = var.cortex_api_key
     included_organisations = ["*"]
   }]
+}
+
+resource "thehive_email_intake" "inbox" {
+  name          = "soc-inbox"
+  organisations = ["SOC"]
+
+  mailbox = {
+    provider_name = "imap"
+
+    credential = {
+      email = "soc@example.com"
+
+      basic_auth = {
+        password = var.email_password
+      }
+    }
+  }
+
+  alert_properties = {
+    type   = "email-intake"
+    source = "{name}"
+    tags   = ["email-intake"]
+  }
 }
 ```
 
