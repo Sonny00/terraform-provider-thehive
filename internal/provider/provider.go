@@ -136,5 +136,9 @@ func (p *TheHiveProvider) DataSources(_ context.Context) []func() datasource.Dat
 	return []func() datasource.DataSource{
 		NewProfileDataSource,
 		NewOrganisationDataSource,
+		NewUserDataSource,
+		NewCustomFieldDataSource,
+		NewObservableTypeDataSource,
+		NewCaseTemplateDataSource,
 	}
 }
