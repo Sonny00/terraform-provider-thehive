@@ -129,6 +129,7 @@ func (p *TheHiveProvider) Resources(_ context.Context) []func() resource.Resourc
 		NewEmailIntakeResource,
 		NewFunctionResource,
 		NewTaxonomyResource,
+		NewAlertFeederResource,
 	}
 }
 
