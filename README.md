@@ -20,6 +20,7 @@ Terraform provider for TheHive 5. Very early stage, built as a learning/hobby pr
 - `thehive_email_intake`
 - `thehive_function`
 - `thehive_taxonomy`
+- `thehive_alert_feeder`
 
 ## Data sources
 
@@ -103,6 +104,36 @@ resource "thehive_taxonomy" "tlp" {
       expanded = "TLP:AMBER+STRICT"
     }]
   }]
+}
+
+resource "thehive_alert_feeder" "threat_feed" {
+  name          = "threat-feed"
+  description   = "Fetches indicators from an external feed."
+  method        = "GET"
+  url           = "https://feed.example.com/indicators"
+  function_name = "process-threat-feed"
+  enabled       = true
+
+  interval = {
+    value = 15
+    unit  = "Minutes"
+  }
+
+  headers = [{
+    key   = "Accept"
+    value = "application/json"
+  }]
+
+  auth = {
+    type     = "basic"
+    username = var.feed_username
+    password = var.feed_password
+  }
+
+  request_timeout = {
+    value = 30
+    unit  = "Seconds"
+  }
 }
 ```
 
