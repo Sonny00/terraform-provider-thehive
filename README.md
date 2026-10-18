@@ -19,6 +19,7 @@ Terraform provider for TheHive 5. Very early stage, built as a learning/hobby pr
 - `thehive_alert_status`
 - `thehive_email_intake`
 - `thehive_function`
+- `thehive_taxonomy`
 
 ## Data sources
 
@@ -83,6 +84,26 @@ resource "thehive_email_intake" "inbox" {
     tags   = ["email-intake"]
   }
 }
+
+resource "thehive_taxonomy" "tlp" {
+  namespace   = "tlp"
+  description = "Traffic Light Protocol"
+  version     = 2
+  exclusive   = true
+
+  predicates = [{
+    value    = "amber"
+    expanded = "TLP:AMBER"
+  }]
+
+  values = [{
+    predicate = "amber"
+    entry = [{
+      value    = "strict"
+      expanded = "TLP:AMBER+STRICT"
+    }]
+  }]
+}
 ```
 
 ## Build
@@ -92,7 +113,7 @@ go mod tidy
 go build -o $(go env GOPATH)/bin/terraform-provider-thehive
 ```
 
-## Usage
+## Run
 
 ```bash
 terraform init
