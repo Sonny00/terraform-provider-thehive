@@ -130,6 +130,7 @@ func (p *TheHiveProvider) Resources(_ context.Context) []func() resource.Resourc
 		NewFunctionResource,
 		NewTaxonomyResource,
 		NewAlertFeederResource,
+		NewNotificationEndpointResource,
 	}
 }
 

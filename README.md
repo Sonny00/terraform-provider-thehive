@@ -21,6 +21,7 @@ Terraform provider for TheHive 5. Very early stage, built as a learning/hobby pr
 - `thehive_function`
 - `thehive_taxonomy`
 - `thehive_alert_feeder`
+- `thehive_notification_endpoint`
 
 ## Data sources
 
@@ -124,16 +125,24 @@ resource "thehive_alert_feeder" "threat_feed" {
     value = "application/json"
   }]
 
-  auth = {
-    type     = "basic"
-    username = var.feed_username
-    password = var.feed_password
-  }
+  auth_type     = "basic"
+  auth_username = var.feed_username
+  auth_password = var.feed_password
 
-  request_timeout = {
-    value = 30
-    unit  = "Seconds"
-  }
+  timeout_value = 30
+  timeout_unit  = "Seconds"
+}
+
+resource "thehive_notification_endpoint" "alerts" {
+  name = "incident-webhook"
+  type = "webhook"
+  url  = "https://notifications.example.com/thehive"
+
+  auth_type     = "bearer"
+  auth_password = var.notification_token
+
+  included_organisations = ["SOC"]
+  excluded_organisations = []
 }
 ```
 
