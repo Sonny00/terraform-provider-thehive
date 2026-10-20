@@ -4,6 +4,12 @@
 
 Terraform provider for TheHive 5. Very early stage, built as a learning/hobby project.
 
+## Requirements
+
+- TheHive 5.x (tested on 5.4+)
+- Go 1.24+ (for building)
+- Terraform 1.0+
+
 ## Resources
 
 - `thehive_organisation`
@@ -40,6 +46,10 @@ provider "thehive" {
   api_key = var.api_key
 }
 
+data "thehive_profile" "analyst" {
+  name = "analyst"
+}
+
 resource "thehive_custom_field" "severity" {
   name         = "business_severity"
   display_name = "Business Severity"
@@ -51,8 +61,24 @@ resource "thehive_custom_field" "severity" {
 resource "thehive_user" "alice" {
   login        = "alice@example.com"
   name         = "Alice"
-  profile      = "analyst"
+  profile      = data.thehive_profile.analyst.name
   organisation = "SOC"
+}
+
+resource "thehive_function" "auto_tag" {
+  name  = "auto-tag-on-create"
+  mode  = "Enabled"
+  types = ["notification"]
+
+  definition = <<-JS
+    function handle(input, context) {
+      if (input.object._type === "Case") {
+        context.api.updateCase(input.object._id, {
+          addTags: ["auto-tagged"]
+        });
+      }
+    }
+  JS
 }
 
 resource "thehive_cortex_config" "main" {
